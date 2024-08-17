@@ -1,4 +1,5 @@
 import axios from "axios"
+import qs from 'qs';
 
 class SpotifyClient {
     static async initialize() {
@@ -20,8 +21,13 @@ class SpotifyClient {
         return spotify;
     }
 
-    test() {
-        console.log(this.token)
+    async getPopularSongs() {
+        const response = await axios.get('https://api.spotify.com/v1/playlists/37i9dQZF1DX9vYRBO9gjDe/tracks',
+            {
+                headers: { Authorization: 'Bearer ' + this.token }
+            }
+        );
+        console.log(response.data)
     }
 }
 
