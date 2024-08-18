@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SongList } from "./components/SongList";
 import spotify from "./lib/spotify";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [popularSongs, setPopularSongs] = useState([]);
+  const [isPlay, setIsPlay] =useState(false);
+  const [selectedSong, setSelectedSong] =useState(false);
+  const audioRef = useRef(null)
+
+
   useEffect(()=>{
     fetchPopularSongs();
   },[]);
@@ -16,7 +21,15 @@ export default function App() {
       return item.track;
     });
     setPopularSongs(popularSongs);
-    setIsLoading(false)
+    setIsLoading(false);
+
+  };
+
+  const handleSongSelected = async(song) => {
+    setSelectedSong(song);
+    audioRef.current.src = song.preview_url;
+    audioRef.current.play();
+    setIsPlay(true)
   }
 
 
@@ -28,9 +41,10 @@ export default function App() {
         </header>
         <section>
           <h2 className="text-2xl font-semibold mb-5">Popular Songs</h2>
-          <SongList isLoading={isLoading} songs={popularSongs}/>
+          <SongList isLoading={isLoading} songs={popularSongs} onSongSelected={handleSongSelected}/>
         </section>
       </main>
+      <audio ref={audioRef}></audio>
     </div>
   );
 }
