@@ -3,6 +3,7 @@ import { SongList } from "./components/SongList";
 import spotify from "./lib/spotify";
 import { Player } from "./components/Player";
 import { SearchInput } from "./components/SearchInput";
+import { Pagination } from "./components/Pagination";
 
 
 export default function App() {
@@ -71,6 +72,8 @@ export default function App() {
     setIsLoading(false);
   }
 
+  
+
 
 
 
@@ -84,6 +87,7 @@ export default function App() {
         <section>
           <h2 className="text-2xl font-semibold mb-5">{isSearchedResult ? "Searched Result" : "Popular Songs"}</h2>
           <SongList isLoading={isLoading} songs={isSearchedResult ? searchedSongs : popularSongs} onSongSelected={handleSongSelected} />
+          {isSearchedResult && <Pagination />}
         </section>
       </main>
       {selectedSong != null && <Player song={selectedSong} isPlay={isPlay} onButtonClick={toggleSong} />}
