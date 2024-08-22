@@ -14,6 +14,9 @@ export default function App() {
   const [keyword, setKeyword] = useState("");
   const [searchedSongs, setSearchedSongs] = useState();
   const [page, setPage] = useState(1);
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrev, setHasPrev] = useState(false);
+
 
   const isSearchedResult = searchedSongs != null;
 
@@ -63,14 +66,16 @@ export default function App() {
     }
   };
 
-  const handleInputChange = (e) =>{
+  const handleInputChange = (e) => {
     setKeyword(e.target.value);
   };
 
-  const searchSongs = async (page) =>{
+  const searchSongs = async (page) => {
     setIsLoading(true);
     const offset = parseInt(page) ? (parseInt(page) - 1) * limit : 0;
     const result = await spotify.searchSongs(keyword, limit, offset);
+    setHasNext(result.next != null)
+    setHasPrev(result.prev != null)
     setSearchedSongs(result.items);
     setIsLoading(false);
   };
@@ -94,11 +99,17 @@ export default function App() {
         <header className="flex justify-between items-center mb-10">
           <h1 className="text-4xl font-bold">Music App</h1>
         </header>
-        <SearchInput onInputChange={handleInputChange} onSubmit={searchSongs}/>
+        <SearchInput onInputChange={handleInputChange} onSubmit={searchSongs} />
         <section>
           <h2 className="text-2xl font-semibold mb-5">{isSearchedResult ? "Searched Result" : "Popular Songs"}</h2>
           <SongList isLoading={isLoading} songs={isSearchedResult ? searchedSongs : popularSongs} onSongSelected={handleSongSelected} />
-          {isSearchedResult && <Pagination onPrev={moveToPrev} onNext={moveToNext} />}
+          {isSearchedResult && (
+            <Pagination
+              onPrev={hasPrev ? moveToPrev : null}
+              onNext={hasNext ? moveToNext : null}
+            />
+          )}
+
         </section>
       </main>
       {selectedSong != null && <Player song={selectedSong} isPlay={isPlay} onButtonClick={toggleSong} />}

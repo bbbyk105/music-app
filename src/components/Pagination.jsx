@@ -1,10 +1,16 @@
-export function Pagination(props) {
+export function Pagination({ onPrev, onNext }) {
     return (
         <div className="mt-8 flex justify-center">
-            <button onClick={props.onPrev} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed">
-            Previous
+            <button
+                disabled={onPrev == null}
+                onClick={onPrev}
+                className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                Prev
             </button>
-            <button onClick={props.onNext} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed ml-4">
+            <button
+                disabled={onNext == null}
+                onClick={onNext}
+                className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed ml-4">
                 Next
             </button>
         </div>
