@@ -10,6 +10,10 @@ export default function App() {
   const [popularSongs, setPopularSongs] = useState([]);
   const [isPlay, setIsPlay] = useState(false);
   const [selectedSong, setSelectedSong] = useState();
+  const [keyword, setKeyword] = useState("");
+  const [searchedSongs, setSearchedSongs] = useState();
+  const isSearchedResult = searchedSongs != null;
+
   const audioRef = useRef(null)
 
 
@@ -54,6 +58,17 @@ export default function App() {
     } else {
       playSong();
     }
+  };
+
+  const handleInputChange = (e) =>{
+    setKeyword(e.target.value);
+  };
+
+  const searchSongs = async () =>{
+    setIsLoading(true)
+    const result = await spotify.searchSongs(keyword);
+    setSearchedSongs(result.items);
+    setIsLoading(false);
   }
 
 
@@ -65,10 +80,10 @@ export default function App() {
         <header className="flex justify-between items-center mb-10">
           <h1 className="text-4xl font-bold">Music App</h1>
         </header>
-        <SearchInput/>
+        <SearchInput onInputChange={handleInputChange} onSubmit={searchSongs}/>
         <section>
-          <h2 className="text-2xl font-semibold mb-5">Popular Songs</h2>
-          <SongList isLoading={isLoading} songs={popularSongs} onSongSelected={handleSongSelected} />
+          <h2 className="text-2xl font-semibold mb-5">{isSearchedResult ? "Searched Result" : "Popular Songs"}</h2>
+          <SongList isLoading={isLoading} songs={isSearchedResult ? searchedSongs : popularSongs} onSongSelected={handleSongSelected} />
         </section>
       </main>
       {selectedSong != null && <Player song={selectedSong} isPlay={isPlay} onButtonClick={toggleSong} />}
